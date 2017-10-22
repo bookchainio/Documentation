@@ -1,75 +1,75 @@
-# Sách trắng kỹ thuật EOS.IO
+# EOS.IO Documento Técnico
 
-**26 tháng 6 năm 2017**
+**26 de Junio de 2017**
 
-**Tóm tắt:** EOS. Phần mềm IO giới thiệu một kiến trúc blockchain mới được thiết kế để cho phép các ứng dụng phi tập trung mở rộng theo chiều dọc và chiều ngang. Điều này đạt được bằng cách tạo ra một hệ điều hành mà ứng dụng có thể được xây dựng trên đó. Phần mềm cung cấp các tài khoản, xác thực, cơ sở dữ liệu, liên lạc không đồng bộ và lịch trình của các ứng dụng trên hàng trăm các lõi CPU hoặc cụm nhỏ. Kết quả của công nghệ này là một kiến trúc blockchain mở rộng quy mô lên đến hàng triệu giao dịch mỗi giây, giúp loại bỏ chi phí người dùng, và cho phép cho việc triển khai nhanh chóng và dễ dàng các ứng dụng không tập trung.
+**Resumen:** El software EOS.IO presenta una nueva arquitectura Blockchain diseñada para facilitar la escalabilidad vertical y horizontal de aplicaciones descentralizadas. Esto se logra creando una construcción similar a un sistema operativo, sobre la cual se puedan construir aplicaciones. El software proporciona cuentas, autenticación, bases de datos, comunicación asíncrona y la ejecución programada de aplicaciones en cientos de núcleos CPU o clústeres. La tecnología resultante es una arquitectura blockchain que se adapta convenientemente a millones de transacciones por segundo, elimina las tarifas de los usuarios y permite el despliegue rápido y sencillo de aplicaciones descentralizadas.
 
-**XIN LƯU Ý: TOKEN MÃ HÓA ĐỀ CẬP TRONG GIẤY TRẮNG NÀY LÀ TOKEN GỐC CỦA BLOCKCHAIN PHÁT TRIỂN TRÊN PHẦN MỀM EOS. NÓ KHÔNG HỀ CHỈ ĐẾN CÁC TOKEN ERC-20 CỦA ETHEREUM LIÊN QUAN ĐẾN VIỆC PHÂN PHỐI TOKEN EOS.**
+**ATENCIÓN: TENGA EN CUENTA QUE LOS TOKENS CRIPTOGRÁFICOS MENCIONADOS EN ESTE WHITE PAPER SE REFIEREN A LOS TOKENS CRIPTOGRÁFICOS EN UNA BLOCKCHAIN LANZADA QUE ADOPTA EL SOFTWARE EOS.IO. NO SE REFIEREN A LOS TOKENS COMPATIBLES ERC-20 DISTRIBUIDOS EN LA BLOCKCHAIN DE ETHEREUM EN CONEXIÓN CON LA DISTRIBUCIÓN DE TOKEN EOS.**
 
-Bản quyền © block.one năm 2017
+Copyright © 2017 block.one
 
-Bất kì ai cũng có thể dùng, chỉnh sửa, phát hành tất cả các nội dung trong white paper này với mục đích phi thương mại và giáo dục mà không cần phải xin phép (đối với mục đích thương mại chúng tôi sẽ áp dụng phí). Nhưng lưu ý phải đề cập đến nguồn khi sử dụng tài liệu này.
+Sin permiso, cualquier persona puede usar, reproducir o distribuir cualquier material en este documento técnico para uso no comercial y educativo (es decir, que no sea por una tarifa o con fines comerciales) siempre que se cite la fuente original y el aviso de copyright correspondiente.
 
-**PHỦ NHẬN:** White Paper này chỉ dành cho mục đích thông tin. block.one không đảm bảo tính chính xác hay kết luận đạt được trong white paper, và white paper này được cung cấp cho vui. block.one từ chối tất cả trách nhiệm liên quan đến: (i) thị trường, mục đích, tính phù hợp, cách sử dụng,... (ii) tất cả nội dung của white paper này không chịu trách nhiệm về lỗi phát sinh; (iii) những nội dung này sẽ không vi phạm bên thứ ba. block.one và đối tác sẽ không có trách nhiệm pháp ly cho thiệt hại từ bất kỳ lý do gì. In no event will block.one or its affiliates be liable to any person or entity for any damages, losses, liabilities, costs or expenses of any kind, whether direct or indirect, consequential, compensatory, incidental, actual, exemplary, punitive or special for the use of, reference to, or reliance on this white paper or any of the content contained herein, including, without limitation, any loss of business, revenues, profits, data, use, goodwill or other intangible losses.
+**DESCARGO DE RESPONSABILIDAD:** Este Documento Técnico de EOS.IO es solo para fines informativos. block.one no garantiza la exactitud o las conclusiones alcanzadas en este documento técnico, y este documento se proporciona "tal cual". block.one no realiza y renuncia expresamente a todas las representaciones y garantías, expresas, implícitas, legales o de otro tipo, incluidas, entre otras, las siguientes: (i) garantías de comerciabilidad, idoneidad para un propósito particular, idoneidad, uso, título o no infracción; (ii) que el contenido de este documento no contiene errores; y (iii) que dichos contenidos no infrinjan los derechos de terceros. block.one y sus afiliados no tendrán responsabilidad por los daños y perjuicios de cualquier tipo que surjan del uso, referencia o confianza en este documento o en cualquier contenido aquí incluido, incluso si se informa de la posibilidad de dichos daños. En ningún caso block.one o sus afiliados serán responsables ante cualquier persona o entidad por los daños, pérdidas, responsabilidades, costos o gastos de cualquier tipo, ya sean directos o indirectos, consecuentes, compensatorios, incidentales, reales, ejemplares, punitivos o especiales. por el uso, la referencia o la confianza en este documento o cualquier contenido aquí incluido, que incluye, entre otros, cualquier pérdida de negocios, ingresos, ganancias, datos, uso, buena voluntad u otras pérdidas intangibles.
 
-- [Bối cảnh](#background)
-- [Những yêu cầu đối với ứng dụng trên blockchain](#requirements-for-blockchain-applications) 
-  - [Hỗ trợ hàng triệu người dùng](#support-millions-of-users)
-  - [Sử dụng miễn phí](#free-usage)
-  - [Dễ dàng nâng cấp và phục hồi lỗi](#easy-upgrades-and-bug-recovery)
-  - [Độ trễ thấp](#low-latency)
-  - [Tiến trình chuỗi](#sequential-performance)
-  - [Tiến trình song song](#parallel-performance)
-- [Thuật toán đồng thuận (DPOS)](#consensus-algorithm-dpos) 
-  - [Xác nhận giao dịch](#transaction-confirmation)
-  - [Giao dịch với Proof of Stake (TaPoS)](#transaction-as-proof-of-stake-tapos)
-- [Tài khoản](#accounts) 
-  - [Tin nhắn & xử lý](#messages--handlers)
-  - [Vai trò dựa trên quản lý việc cấp phép](#role-based-permission-management) 
-    - [Các mức độ cấp phép theo tên](#named-permission-levels)
-    - [Tin nhắn xử lý nhóm theo tên](#named-message-handler-groups)
-    - [Bản đồ cấp phép](#permission-mapping)
-    - [Đánh giá cấp phép](#evaluating-permissions) 
-      - [Mặc định cấp phép nhóm](#default-permission-groups)
-      - [Đánh giá cấp quyền song song](#parallel-evaluation-of-permissions)
-  - [Tin nhắn với lệnh trễ](#messages-with-mandatory-delay)
-  - [Phục hồi khóa bị mất](#recovery-from-stolen-keys)
-- [Xử lý ứng dụng song song](#deterministic-parallel-execution-of-applications) 
-  - [Giảm thiểu độ trễ giao tiếp](#minimizing-communication-latency)
-  - [Bộ xử lý tin nhắn chỉ-đọc](#read-only-message-handlers)
-  - [Các giao dịch nguyên tử với nhiều tài khoản](#atomic-transactions-with-multiple-accounts)
-  - [Đánh giá song song blockchain](#partial-evaluation-of-blockchain-state)
-  - [Lịch trình tốt nhất](#subjective-best-effort-scheduling)
-- [Mô hình token và sử dụng tài nguyên](#token-model-and-resource-usage) 
-  - [Đo lường khách quan và chủ quan](#objective-and-subjective-measurements)
-  - [Nhận Pays](#receiver-pays)
-  - [Công suất đại diện](#delegating-capacity)
-  - [Tách phí giao dịch từ giá trị token](#separating-transaction-costs-from-token-value)
-  - [Giá lưu trữ thông tin](#state-storage-costs)
-  - [Phần thưởng khối](#block-rewards)
-  - [Các ứng dụng lợi ích cộng đồng](#community-benefit-applications)
-- [Quản trị](#governance) 
-  - [Đóng băng tài khoản](#freezing-accounts)
-  - [Thay đổi mã tài khoản](#changing-account-code)
-  - [Hiến pháp](#constitution)
-  - [Nâng cấp giao thức & Hiến pháp](#upgrading-the-protocol--constitution) 
-    - [Thay đổi khẩn cấp](#emergency-changes)
-- [Lập trình scripts & Máy ảo](#scripts--virtual-machines) 
-  - [Lược đồ xác định thông báo](#schema-defined-messages)
-  - [Lược đồ xác định cơ sở dữ liệu](#schema-defined-database)
-  - [Xác thực riêng lẽ từ ứng dụng](#separating-authentication-from-application)
-  - [Kiến trúc máy ảo độc lập](#virtual-machine-independent-architecture) 
+- [Antecedentes](#background)
+- [Requisitos de Aplicaciones Blockchain](#requirements-for-blockchain-applications) 
+  - [Soporte para Millones de Usuarios](#support-millions-of-users)
+  - [Uso gratuito](#free-usage)
+  - [Actualizaciones Sencillas y Recuperación de Errores](#easy-upgrades-and-bug-recovery)
+  - [Baja Latencia](#low-latency)
+  - [Rendimiento Secuencial](#sequential-performance)
+  - [Rendimiento Paralelo](#parallel-performance)
+- [Algoritmo de Consenso (DPOS)](#consensus-algorithm-dpos) 
+  - [Confirmación de Transacción](#transaction-confirmation)
+  - [Transacción como Prueba de Participación (TaPoS)](#transaction-as-proof-of-stake-tapos)
+- [Cuentas](#accounts) 
+  - [Mensajes & Handlers](#messages--handlers)
+  - [Gestión de Permisos Basada en Roles](#role-based-permission-management) 
+    - [Niveles de Permiso Nombrados](#named-permission-levels)
+    - [Grupos de Manejo de Mensajes Nombrados](#named-message-handler-groups)
+    - [Asignación de Permisos](#permission-mapping)
+    - [Evaluación de Permisos](#evaluating-permissions) 
+      - [Grupos de Permisos Predeterminados](#default-permission-groups)
+      - [Evaluación Paralela de Permisos](#parallel-evaluation-of-permissions)
+  - [Mensajes con Retraso Obligatorio](#messages-with-mandatory-delay)
+  - [Recuperación a partir de Claves Robadas](#recovery-from-stolen-keys)
+- [Ejecución Paralela Determinista de Aplicaciones](#deterministic-parallel-execution-of-applications) 
+  - [Minimizando la Latencia de la Comunicación](#minimizing-communication-latency)
+  - [Controladores de Mensajes de Sólo Lectura](#read-only-message-handlers)
+  - [Transacciones Atómicas con Múltiples Cuentas](#atomic-transactions-with-multiple-accounts)
+  - [Evaluación Parcial del Estado de la Blockchain](#partial-evaluation-of-blockchain-state)
+  - [Mejor Esfuerzo Subjetivo de Programación](#subjective-best-effort-scheduling)
+- [Modelo de Token y Uso de Recursos](#token-model-and-resource-usage) 
+  - [Mediciones Objetivas y Subjetivas](#objective-and-subjective-measurements)
+  - [El Receptor Paga](#receiver-pays)
+  - [Delegando Capacidad](#delegating-capacity)
+  - [Separación de los Costos de Transacción del Valor del Token](#separating-transaction-costs-from-token-value)
+  - [Costos de Almacenamiento del Estado](#state-storage-costs)
+  - [Recompensas por Bloques](#block-rewards)
+  - [Aplicaciones de Beneficios Comunitarios](#community-benefit-applications)
+- [Gobernanza](#governance) 
+  - [Congelación de Cuentas](#freezing-accounts)
+  - [Cambio de Código de Cuenta](#changing-account-code)
+  - [Constitución](#constitution)
+  - [Actualizando el Protocolo & Constitución](#upgrading-the-protocol--constitution) 
+    - [Cambios de Emergencia](#emergency-changes)
+- [Scripts & Maquinas virtuales](#scripts--virtual-machines) 
+  - [Mensajes Definidos por Esquema](#schema-defined-messages)
+  - [Base de Datos Definida por Esquema](#schema-defined-database)
+  - [Separación de la Autenticación de la Aplicación](#separating-authentication-from-application)
+  - [Arquitectura Independiente de la Máquina Virtual](#virtual-machine-independent-architecture) 
     - [Web Assembly (WASM)](#web-assembly-wasm)
-    - [Máy ảo Ethereum (EVM)](#ethereum-virtual-machine-evm)
-- [Giao tiếp xuyên blockchain](#inter-blockchain-communication) 
-  - [Chứng minh Merkle cho việc xác thực Light Client (LCV)](#merkle-proofs-for-light-client-validation-lcv)
-  - [Độ trễ của giao tiếp xuyên blockchain](#latency-of-interchain-communication)
-  - [Chứng minh hoàn chỉnh](#proof-of-completeness)
-- [Kết luận](#conclusion)
+    - [Máquina Virtual de Ethereum (EVM)](#ethereum-virtual-machine-evm)
+- [Comunicación Inter Blockchain](#inter-blockchain-communication) 
+  - [Pruebas Merkle para validaciones desde Clientes Ligeros (LCV)](#merkle-proofs-for-light-client-validation-lcv)
+  - [Latencia de la Comunicación Interchain](#latency-of-interchain-communication)
+  - [Prueba de Integridad](#proof-of-completeness)
+- [Conclusión](#conclusion)
 
-# Bối cảnh
+# Antecedentes
 
-Blockchain technology was introduced in 2008 with the launch of the bitcoin currency, and since then entrepreneurs and developers have been attempting to generalize the technology in order to support a wider range of applications on a single blockchain platform.
+La tecnología Blockchain se introdujo en 2008 con el lanzamiento de la moneda bitcoin, y desde entonces los empresarios y desarrolladores han intentado generalizar la tecnología para admitir una gama más amplia de aplicaciones en una sola plataforma de cadena de bloques.
 
 While a number of blockchain platforms have struggled to support functional decentralized applications, application specific blockchains such as the BitShares decentralized exchange (2014) and Steem social media platform (2016) have become heavily used blockchains with tens of thousands of daily active users. They have achieved this by increasing performance to thousands of transactions per second, reducing latency to 1.5 seconds, eliminating fees, and providing a user experience similar to those currently provided by existing centralized services.
 
@@ -105,17 +105,17 @@ There are some applications that just cannot be implemented with parallel algori
 
 Large scale applications need to divide the workload across multiple CPUs and computers.
 
-# Thuật toán đồng thuận (DPOS)
+# Consensus Algorithm (DPOS)
 
-EOS.IO dùng một thuật toán duy nhất có khả năng cung cấp đủ sức mạnh cho ứng dụng trên blockchain, [Delegated Proof of Stake (DPOS)](https://steemit.com/dpos/@dantheman/dpos-consensus-algorithm-this-missing-white-paper). Theo thuật toán này, những người giữ token trên blockchain sử dụng phần mềm EOS.IO có thể chọn một người tạo block thông qua hệ thống bỏ phiếu liên tục và bất kì ai cũng có thể được chọn để tham gia vào quá trình tạo block và sẽ có cơ hội tạo block tỉ lệ thuận với số lượng phiếu bầu nhận được tương đối với những người tạo khối khác. Trên blockchain cá nhân, người quản lý có thể sử dụng token để thêm hay loại bỏ nhân viên IT.
+EOS.IO software utilizes the only decentralized consensus algorithm capable of meeting the performance requirements of applications on the blockchain, [Delegated Proof of Stake (DPOS)](https://steemit.com/dpos/@dantheman/dpos-consensus-algorithm-this-missing-white-paper). Under this algorithm, those who hold tokens on a blockchain adopting the EOS.IO software may select block producers through a continuous approval voting system and anyone may choose to participate in block production and will be given an opportunity to produce blocks proportional to the total votes they have received relative to all other producers. For private blockchains the management could use the tokens to add and remove IT staff.
 
-Phần mềm EOS>IO cho phép block được tạo mỗi 3 giây một lần và chỉ duy nhất một người được phép tạo block ở một thời điểm nhất định. Nếu block không được tạo theo đúng lịch trình thì block đó được bỏ qua. Khi một hay nhiều block bị bỏ qua, có 6 hay nhiều hơn lỗ hổng trong blockchain (???).
+The EOS.IO software enables blocks to be produced exactly every 3 seconds and exactly one producer is authorized to produce a block at any given point in time. If the block is not produced at the scheduled time then the block for that time slot is skipped. When one or more blocks are skipped, there is a 6 or more second gap in the blockchain.
 
-Sử dụng phần mềm EOS.IO, 21 blocks được tạo ra trong mỗi chu kì và cứ thế quay vòng. Lúc bắt đầu mỗi chu kì, 21 người sẽ được chọn để tham gia vào việc tạo block. 20 người có lượt bầu chọn cao nhất sẽ được tự động chọn trong mỗi chu kỳ và người cuối cùng được chọn theo tỉ lệ phiếu bầu. Những người được chọn bị xáo trộn sử dụng một số ngẫu nhiên từ thời gian của block. Việc xáo trộn này để đảm bảo tính kết nối cân bằng đến tất cả những người tạo khối khác.
+Using the EOS.IO software blocks are produced in rounds of 21. At the start of each round 21 unique block producers are chosen. The top 20 by total approval are automatically chosen every round and the last producer is chosen proportional to their number of votes relative to other producers. The selected producers are shuffled using a pseudorandom number derived from the block time. This shuffling is done to ensure that all producers maintain balanced connectivity to all other producers.
 
-Nếu một người bỏ lỡ một block và không tạo bất kì block nào trong vòng 24 giờ, họ sẽ bị khai trừ đến khi họ thông báo cho blockchain rằng họ muốn bắt đầu lại. Việc này đảm bảo network vận hành mượt mà bằng cách giảm thiểu số block không được tạo ra theo đúng lịch trình và loại bỏ bơt những người không đáng tin cậy.
+If a producer misses a block and has not produced any block within the last 24 hours they are removed from consideration until they notify the blockchain of their intention to start producing blocks again. This ensures the network operates smoothly by minimizing the number of blocks missed by not scheduling those who are proven to be unreliable.
 
-Trong điều kiện thông thường, blockchain sử dụng DPOS không thực hiện bất kì sự phân tách nào bởi vì những người tạo khối sẽ hợp tác với nhau để tạo ra khổi thay vì tranh giành nhau. Trong trường hợp phân tách, sự đồng thuận sẽ tự động chuyển sang chuỗi dài nhất. This metric works because the rate at which blocks are added to a blockchain chain fork is directly correlated to the percentage of block producers that share the same consensus. In other words, a blockchain fork with more producers on it will grow in length faster than one with fewer producers. Furthermore, no block producer should be producing blocks on two forks at the same time. If a block producer is caught doing this then such block producer will likely be voted out. Cryptographic evidence of such double-production may also be used to automatically remove abusers.
+Under normal conditions a DPOS blockchain does not experience any forks because the block producers cooperate to produce blocks rather than compete. In the event there is a fork, consensus will automatically switch to the longest chain. This metric works because the rate at which blocks are added to a blockchain chain fork is directly correlated to the percentage of block producers that share the same consensus. In other words, a blockchain fork with more producers on it will grow in length faster than one with fewer producers. Furthermore, no block producer should be producing blocks on two forks at the same time. If a block producer is caught doing this then such block producer will likely be voted out. Cryptographic evidence of such double-production may also be used to automatically remove abusers.
 
 ## Transaction Confirmation
 
@@ -138,11 +138,11 @@ Over time all users end up directly confirming the blockchain which makes it dif
 
 # Accounts
 
-Phần mềm EOS.IO cho phép tạo tài khoản bằng chữ cái có thể đọc được với độ dài từ 2 đến 32 kí tự. Tên được chọn bởi người tạo tài khoản. Tất cả tài khoản phải có số dư tối thiểu lúc được tạo để trang trải chi phí cho việc lưu giữ thông tin trên blockchain. Tên tài khoản cũng hỗ trợ tên miền phụ. Ví dụ bạn sở hữu tài khoản @domain thì bạn là người duy nhất có thể tạo được tài khoản @user.domain.
+The EOS.IO software permits all accounts to be referenced by a unique human readable name of 2 to 32 characters in length. The name is chosen by the creator of the account. All accounts must be funded with the minimal account balance at the time they are created to cover the cost of storing account data. Account names also support namespaces such that the owner of account @domain is the only one who can create the account @user.domain.
 
-Nhà phát triển ứng dụng không tập trung phải trả một mức tối thiểu nào đó cho việc tạo người dùng mới. Dịch vụ truyền thống phải trả một lượng tiền rất lớn cho mỗi khách hàng đăng kí. Chi phí cho việc tạo một tài khoản mới trên blockchain không đáng kể khi so sánh với các dịch vụ truyền thống đó. Người dùng nếu đã tạo tài khoản cho một ứng dụng thì không cần phải đăng kí lại khi sử dụng các ứng dụng khác trên blockchain.
+In a decentralized context, application developers will pay the nominal cost of account creation to sign up a new user. Traditional businesses already spend significant sums of money per customer they acquire in the form of advertising, free services, etc. The cost of funding a new blockchain account should be insignificant in comparison. Fortunately, there is no need to create accounts for users already signed up by another application.
 
-## Tín hiệu & Xử lý
+## Messages & Handlers
 
 Each account can send structured messages to other accounts and may define scripts to handle messages when they are received. The EOS.IO software gives each account its own private database which can only be accessed by its own message handlers. Message handling scripts can also send messages to other accounts. The combination of messages and automated message handlers is how EOS.IO defines smart contracts.
 

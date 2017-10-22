@@ -81,7 +81,7 @@ Yaygın kullanım sağlamak için blok zinciri üzerindeki uygulamaların aşağ
 
 ## Milyonlarca Kullanıcı Desteği
 
-Disrupting businesses such as Ebay, Uber, AirBnB, and Facebook, require blockchain technology capable of handling tens of millions of active daily users. In certain cases, applications may not work unless a critical mass of users is reached and therefore a platform that can handle mass number of users is paramount.
+Ebay, Uber, AirBnB ve Facebook gibi karmaşık iş yürüten şirketler on milyonlarca aktif günlük kullanıcıyı işleyebilecek bir blok zincir teknolojisine ihtiyaç duyarlar. Bazı durumlarda, kritik sayıda kullanıcı kitlesine ulaşılmadığı taktirde uygulamalar çalışmayabilirler ve bu nedenle çok sayıda kullanıcıyı işleyebilecek bir platform çok önemlidir.
 
 ## Ücretsiz Kullanım
 
