@@ -46,76 +46,76 @@ Sans autorisation, quiconque peut utiliser, reproduire ou distribuer tout matér
   - [Capacité de délégation](#delegating-capacity)
   - [Indépendance des coûts de transaction et de la valeur des jetons](#separating-transaction-costs-from-token-value)
   - [Coûts de stockage](#state-storage-costs)
-  - [Block Rewards](#block-rewards)
-  - [Community Benefit Applications](#community-benefit-applications)
-- [Governance](#governance) 
-  - [Freezing Accounts](#freezing-accounts)
-  - [Changing Account Code](#changing-account-code)
+  - [Récompenses des blocs](#block-rewards)
+  - [Système de proposition de travail](#community-benefit-applications)
+- [Gouvernance](#governance) 
+  - [Gel des comptes](#freezing-accounts)
+  - [Modification du code de compte](#changing-account-code)
   - [Constitution](#constitution)
-  - [Upgrading the Protocol & Constitution](#upgrading-the-protocol--constitution) 
-    - [Emergency Changes](#emergency-changes)
-- [Scripts & Virtual Machines](#scripts--virtual-machines) 
-  - [Schema Defined Messages](#schema-defined-messages)
-  - [Schema Defined Database](#schema-defined-database)
-  - [Separating Authentication from Application](#separating-authentication-from-application)
+  - [Mise à jour du protocole & de la constitution](#upgrading-the-protocol--constitution) 
+    - [Changements d'urgence](#emergency-changes)
+- [Scripts & machines virtuelles](#scripts--virtual-machines) 
+  - [Actions définies par schéma](#schema-defined-messages)
+  - [Base de données définie par schéma](#schema-defined-database)
+  - [Séparation de l'authentification et de l'application](#separating-authentication-from-application)
   - [Virtual Machine Independent Architecture](#virtual-machine-independent-architecture) 
     - [Web Assembly (WASM)](#web-assembly-wasm)
     - [Ethereum Virtual Machine (EVM)](#ethereum-virtual-machine-evm)
-- [Inter Blockchain Communication](#inter-blockchain-communication) 
-  - [Merkle Proofs for Light Client Validation (LCV)](#merkle-proofs-for-light-client-validation-lcv)
-  - [Latency of Interchain Communication](#latency-of-interchain-communication)
-  - [Proof of Completeness](#proof-of-completeness)
+- [Communication Inter-Blockchains](#inter-blockchain-communication) 
+  - [Preuves de Merkle pour la validation des clients légers (LCV)](#merkle-proofs-for-light-client-validation-lcv)
+  - [Latence de la communication interchaînes](#latency-of-interchain-communication)
+  - [Preuve de finalité](#proof-of-completeness)
 - [Conclusion](#conclusion)
 
-# Background
+# Contexte
 
-Blockchain technology was introduced in 2008 with the launch of the bitcoin currency, and since then entrepreneurs and developers have been attempting to generalize the technology in order to support a wider range of applications on a single blockchain platform.
+La technologie Blockchain a été introduite en 2008 avec le lancement de la monnaie Bitcoin, et depuis lors, les entrepreneurs et les développeurs ont tenté de généraliser la technologie pour prendre en charge un plus large éventail d'applications sur une seule plateforme Blockchain.
 
-While a number of blockchain platforms have struggled to support functional decentralized applications, application specific blockchains such as the BitShares decentralized exchange (2014) and Steem social media platform (2016) have become heavily used blockchains with tens of thousands of daily active users. They have achieved this by increasing performance to thousands of transactions per second, reducing latency to 1.5 seconds, eliminating fees, and providing a user experience similar to those currently provided by existing centralized services.
+Alors qu'un certain nombre de plateformes blockchain ont eu du mal à prendre en charge les applications fonctionnelles décentralisées, des blockchains spécifiques à des applications telles que l'échange décentralisé de BitShares (2014) et la plateforme sociale Steem (2016) sont devenues des blockchains très utilisées avec des dizaines de milliers d'utilisateurs actifs au quotidien. Ils y sont parvenus en augmentant la performance à des milliers de transactions par seconde, en réduisant la latence à 1,5 seconde, en éliminant les frais par transaction et en offrant une expérience utilisateur similaire à celle actuellement offerte par les services centralisés existants.
 
-Existing blockchain platforms are burdened by large fees and limited computational capacity that prevent widespread blockchain adoption.
+Les plateformes blockchain existantes sont grevées par des frais importants et une capacité de calcul limitée qui empêchent l'adoption généralisée de la blockchain.
 
-# Requirements for Blockchain Applications
+# Pré-requis des applications Blockchain
 
-In order to gain widespread use, applications on the blockchain require a platform that is flexible enough to meet the following requirements:
+Afin de voir leur utilisation se généraliser, les applications blockchain requièrent une plateforme suffisamment flexible pour répondre aux exigences suivantes:
 
-## Support Millions of Users
+## Le support de millions d'utilisateurs
 
-Disrupting businesses such as Ebay, Uber, AirBnB, and Facebook, require blockchain technology capable of handling tens of millions of active daily users. In certain cases, applications may not work unless a critical mass of users is reached and therefore a platform that can handle mass number of users is paramount.
+Pour concurrencer des entreprises comme eBay, Uber, AirBnB et Facebook, il faut une technologie blockchain capable de supporter des dizaines de millions d'utilisateurs quotidiens. Dans certains cas, une application peut ne pas fonctionner tant qu'une masse critique d'utilisateurs n'est pas atteinte. Il est clair qu'une plateforme capable de traiter un très grand nombre d'utilisateurs est donc primordiale.
 
-## Free Usage
+## Utilisation gratuite
 
-Application developers need the flexibility to offer users free services; users should not have to pay in order to use the platform or benefit from its services. A blockchain platform that is free to use for users will likely gain more widespread adoption. Developers and businesses can then create effective monetization strategies.
+Les développeurs d'applications ont besoin de flexibilité pour offrir aux utilisateurs des services gratuits; les utilisateurs ne devraient pas avoir à payer pour utiliser la plateforme ou bénéficier de ses services. Une plateforme blockchain dont l'utilisation est gratuite pour les utilisateurs sera probablement adoptée à plus grande échelle. Les promoteurs et les entreprises peuvent alors créer des stratégies de monétisation efficaces.
 
-## Easy Upgrades and Bug Recovery
+## Mises à jour faciles et correction des bogues
 
-Businesses building blockchain based applications need the flexibility to enhance their applications with new features.
+Les entreprises qui construisent des applications basées sur une blockchain ont besoin de flexibilité pour améliorer leurs applications avec de nouvelles fonctionnalités. La plateforme doit prendre en charge les mises à niveau logicielles et des smartcontracts.
 
-All non-trivial software is subject to bugs, even with the most rigorous of formal verification. The platform must be robust enough to fix bugs when they inevitably occur.
+Tous les logiciels non triviaux sont sujets à des bogues, même avec la plus rigoureuse des vérifications formelles. La plateforme doit être suffisamment robuste pour permettre la correction des bogues lorsqu'ils surviennent inévitablement.
 
-## Low Latency
+## Faible latence
 
-A good user experience demands reliable feedback with delay of no more than a few seconds. Longer delays frustrate users and make applications built on a blockchain less competitive with existing non-blockchain alternatives.
+Une bonne expérience utilisateur exige un temps de réponse fiable avec un délai ne dépassant pas quelques secondes. Des délais plus longs frustrent les utilisateurs et rendent les applications construites sur blockchain moins compétitives par rapport aux alternatives existantes ne fonctionnant pas sur blockchain. La plateforme devrait supporter une faible latence des transactions.
 
-## Sequential Performance
+## Performance séquentielle
 
-There are some applications that just cannot be implemented with parallel algorithms due to sequentially dependent steps. Applications such as exchanges need enough sequential performance to handle high volumes and therefore a platform with fast sequential performance is required.
+Il y a des applications qui ne peuvent tout simplement pas être implémentées avec des algorithmes parallèles en raison d'étapes séquentiellement dépendantes. Les applications telles que les plateformes d'échanges ont besoin d'une performance séquentielle suffisante pour traiter des volumes élevés. Par conséquent, la plateforme doit offrir des performances séquentielles rapides.
 
-## Parallel Performance
+## Performance parallèle
 
-Large scale applications need to divide the workload across multiple CPUs and computers.
+Les applications à grande échelle doivent répartir la charge de travail entre de multiples CPU et ordinateurs.
 
-# Consensus Algorithm (DPOS)
+# Algorithme de consensus (BFT-DPOS)
 
-EOS.IO software utilizes the only decentralized consensus algorithm capable of meeting the performance requirements of applications on the blockchain, [Delegated Proof of Stake (DPOS)](https://steemit.com/dpos/@dantheman/dpos-consensus-algorithm-this-missing-white-paper). Under this algorithm, those who hold tokens on a blockchain adopting the EOS.IO software may select block producers through a continuous approval voting system and anyone may choose to participate in block production and will be given an opportunity to produce blocks proportional to the total votes they have received relative to all other producers. For private blockchains the management could use the tokens to add and remove IT staff.
+Le logiciel EOS.IO utilise le seul algorithme de consensus décentralisé connu qui s'est avéré capable de répondre aux exigences de performance des applications blockchain, [la preuve d'enjeu déléguée (DPOS)](https://steemit.com/dpos/@dantheman/dpos-consensus-algorithm-this-missing-white-paper). Under this algorithm, those who hold tokens on a blockchain adopting the EOS.IO software may select block producers through a continuous approval voting system and anyone may choose to participate in block production and will be given an opportunity to produce blocks proportional to the total votes they have received relative to all other producers. For private blockchains the management could use the tokens to add and remove IT staff.
 
-The EOS.IO software enables blocks to be produced exactly every 3 seconds and exactly one producer is authorized to produce a block at any given point in time. If the block is not produced at the scheduled time then the block for that time slot is skipped. When one or more blocks are skipped, there is a 6 or more second gap in the blockchain.
+Le logiciel EOS.IO permet de produire des blocs exactement toutes les 0,5 seconde et un seul producteur est autorisé à produire un bloc à un moment donné. Si le bloc n'est pas produit à l'heure prévue, le bloc pour cet interval de temps est ignoré. Lorsqu'un ou plusieurs blocs sont sautés, il y a un écart de 0,5 ou plus d'une seconde dans la blockchain. If the block is not produced at the scheduled time then the block for that time slot is skipped. When one or more blocks are skipped, there is a 6 or more second gap in the blockchain.
 
 Using the EOS.IO software blocks are produced in rounds of 21. At the start of each round 21 unique block producers are chosen. The top 20 by total approval are automatically chosen every round and the last producer is chosen proportional to their number of votes relative to other producers. The selected producers are shuffled using a pseudorandom number derived from the block time. This shuffling is done to ensure that all producers maintain balanced connectivity to all other producers.
 
-If a producer misses a block and has not produced any block within the last 24 hours they are removed from consideration until they notify the blockchain of their intention to start producing blocks again. This ensures the network operates smoothly by minimizing the number of blocks missed by not scheduling those who are proven to be unreliable.
+Si un producteur saute un bloc et n'en a produit aucun dans les dernières 24 heures, il est retiré de la liste des producteurs jusqu'à ce qu'il avise la chaîne de blocs de son intention de recommencer à produire des blocs. Cela permet d'assurer le bon fonctionnement du réseau en minimisant le nombre de blocs manqués par les producteurs absents, dont le manque de fiabilité est avéré.
 
-Under normal conditions a DPOS blockchain does not experience any forks because the block producers cooperate to produce blocks rather than compete. In the event there is a fork, consensus will automatically switch to the longest chain. This metric works because the rate at which blocks are added to a blockchain chain fork is directly correlated to the percentage of block producers that share the same consensus. In other words, a blockchain fork with more producers on it will grow in length faster than one with fewer producers. Furthermore, no block producer should be producing blocks on two forks at the same time. If a block producer is caught doing this then such block producer will likely be voted out. Cryptographic evidence of such double-production may also be used to automatically remove abusers.
+Dans des conditions normales, une chaîne de blocs DPOS ne connaît pas de forks car, au lieu d'être en concurrence, les producteurs de blocs coopèrent pour produire des blocs. Dans le cas où il y a un fork, le consensus passera automatiquement à la chaîne la plus longue. Cette méthode fonctionne parce que le taux auquel les blocs sont ajoutés à un fork de la blockchain est directement corrélé au pourcentage de producteurs de blocs qui partagent le même consensus. In other words, a blockchain fork with more producers on it will grow in length faster than one with fewer producers. Furthermore, no block producer should be producing blocks on two forks at the same time. If a block producer is caught doing this then such block producer will likely be voted out. Cryptographic evidence of such double-production may also be used to automatically remove abusers.
 
 ## Transaction Confirmation
 
