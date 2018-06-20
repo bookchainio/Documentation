@@ -1,34 +1,34 @@
-# EOS.IO Technical White Paper
+# Livre blanc technique EOS.IO v2
 
-**26 juin 2017**
+**Publication du 16 Mars 2018**
 
-**Abstract:** The EOS.IO software introduces a new blockchain architecture designed to enable vertical and horizontal scaling of decentralized applications. This is achieved by creating an operating system-like construct upon which applications can be built. The software provides accounts, authentication, databases, asynchronous communication and the scheduling of applications across hundreds of CPU cores or clusters. The resulting technology is a blockchain architecture that scales to millions of transactions per second, eliminates user fees, and allows for quick and easy deployment of decentralized applications.
+**Résumé:** Le logiciel EOS.IO introduit une nouvelle architecture blockchain conçue pour permettre le scaling vertical et horizontal d'applications décentralisées. Ceci est réalisé en créant une plateforme de type système d'exploitation sur laquelle les applications peuvent être développées. Le logiciel fournit les comptes, l'authentification, les bases de données, la communication asynchrone et l'ordonnancement des tâches sur les unités de traitement (Coeurs/Threads CPU). La technologie qui en résulte est une architecture blockchain pouvant potentiellement atteindre des millions de transactions à la seconde, élimine les frais d'utilisation et permet un déploiement et une maintenance rapides et faciles des applications décentralisées, le tout sur une blockchain gouvernée.
 
-**PLEASE NOTE: CRYPTOGRAPHIC TOKENS REFERRED TO IN THIS WHITE PAPER REFER TO CRYPTOGRAPHIC TOKENS ON A LAUNCHED BLOCKCHAIN THAT ADOPTS THE EOS.IO SOFTWARE. THEY DO NOT REFER TO THE ERC-20 COMPATIBLE TOKENS BEING DISTRIBUTED ON THE ETHEREUM BLOCKCHAIN IN CONNECTION WITH THE EOS TOKEN DISTRIBUTION.**
+**VEUILLEZ NOTER QUE: LES JETONS CRYPTOGRAPHIQUES MENTIONNÉS DANS CE WHITEPAPER FONT RÉFÉRENCE AUX JETONS CRYPTOGRAPHIQUES SUR UNE BLOCKCHAIN LANCÉE QUI ADOPTE LE LOGICIEL EOS.IO. ILS NE FONT PAS RÉFÉRENCE AUX JETONS COMPATIBLES ERC-20 QUI SONT DISTRIBUÉS SUR LA BLOCKCHAIN D'ÉTHÉRÉUM EMPLOYÉS DANS LE CADRE DE LA DISTRIBUTION DES JETONS EOS.**
 
-Copyright © block.one 2017
+Copyright © 2018 block.one
 
-Sans autorisation, n'importe qui peut utiliser, reproduire ou distribuer tout matériel dans ce livre blanc pour une utilisation non-commerciale et éducative (c'est-à-dire autres que moyennant des coûts ou à des fins commerciales) pourvu que la source d'origine et l'avis des droits d'auteurs applicables soient cité.
+Sans autorisation, quiconque peut utiliser, reproduire ou distribuer tout matériel contenu dans le présent whitepaper à des fins non commerciales et éducatives (c.-à-d. à des fins autres que des lucratives ou des fins commerciales), pourvu que la source originale et l'avis de droit d'auteur applicable soient cités.
 
-**DISCLAIMER:** This EOS.IO Technical White Paper is for information purposes only. block.one does not guarantee the accuracy of or the conclusions reached in this white paper, and this white paper is provided “as is”. block.one does not make and expressly disclaims all representations and warranties, express, implied, statutory or otherwise, whatsoever, including, but not limited to: (i) warranties of merchantability, fitness for a particular purpose, suitability, usage, title or noninfringement; (ii) that the contents of this white paper are free from error; and (iii) that such contents will not infringe third-party rights. block.one and its affiliates shall have no liability for damages of any kind arising out of the use, reference to, or reliance on this white paper or any of the content contained herein, even if advised of the possibility of such damages. In no event will block.one or its affiliates be liable to any person or entity for any damages, losses, liabilities, costs or expenses of any kind, whether direct or indirect, consequential, compensatory, incidental, actual, exemplary, punitive or special for the use of, reference to, or reliance on this white paper or any of the content contained herein, including, without limitation, any loss of business, revenues, profits, data, use, goodwill or other intangible losses.
+**AVERTISSEMENT**: Le présent whitepaper technique EOS.IO v2 n'est fourni qu'à titre d'information. block.one ne garantit pas l'exactitude ou les conclusions de ce whitepaper, et ce whitepaper est fourni "tel quel". block.one ne fait pas et rejette expressément toutes les représentations et garanties, expresses, implicites, statutaires ou autres, de quelque nature que ce soit, y compris, mais sans s'y limiter: (i) les garanties de qualité marchande, d'adaptation à un usage particulier, de convenance, d'usage, de titre ou de non-violation; (ii) que le contenu de ce whitepaper est exempt d'erreur; et (iii) que ce contenu ne portera pas atteinte aux droits des tiers. block.one et ses affiliés ne peuvent être tenus responsables des dommages de toute sorte découlant de l'utilisation, de la référence ou de la confiance dans ce whitepaper ou dans le contenu de ce dernier, même s'ils sont conscients de la possibilité de tels dommages. En aucun cas Block.one ou ses affiliés ne seront responsables envers toute personne ou entité pour tous dommages, pertes, responsabilités, coûts ou dépenses de toute nature, qu'ils soient directs ou indirects, consécutifs, compensatoires, accessoires, réels, exemplaires, punitifs ou spéciaux pour l'utilisation, la référence à, ou la confiance dans ce whitepaper ou tout contenu contenu de ce whitepaper, y compris, sans limitation, toute perte d'affaires, revenus, profits, données, accès, avantages ou autres pertes intangibles.
 
-- [Arrière-plan](#background)
-- [Requirements for Blockchain Applications](#requirements-for-blockchain-applications) 
-  - [Support Millions of Users](#support-millions-of-users)
+- [Contexte](#background)
+- [Pré-requis des applications Blockchain](#requirements-for-blockchain-applications) 
+  - [Le support de millions d'utilisateurs](#support-millions-of-users)
   - [Utilisation gratuite](#free-usage)
-  - [Mises à jour facile et correction des bugs](#easy-upgrades-and-bug-recovery)
+  - [Mises à jour faciles et correction des bogues](#easy-upgrades-and-bug-recovery)
   - [Faible latence](#low-latency)
-  - [Sequential Performance](#sequential-performance)
-  - [Parallel Performance](#parallel-performance)
-- [Consensus Algorithm (DPOS)](#consensus-algorithm-dpos) 
-  - [Transaction Confirmation](#transaction-confirmation)
-  - [Transaction as Proof of Stake (TaPoS)](#transaction-as-proof-of-stake-tapos)
-- [Accounts](#accounts) 
-  - [Messages & Handlers](#messages--handlers)
-  - [Role Based Permission Management](#role-based-permission-management) 
-    - [Named Permission Levels](#named-permission-levels)
-    - [Named Message Handler Groups](#named-message-handler-groups)
-    - [Permission Mapping](#permission-mapping)
+  - [Performance séquentielle](#sequential-performance)
+  - [Performance parallèle](#parallel-performance)
+- [Algorithme de consensus (BFT-DPOS)](#consensus-algorithm-dpos) 
+  - [Confirmation de la transaction](#transaction-confirmation)
+  - [Transaction comme preuve de participation (TaPoS)](#transaction-as-proof-of-stake-tapos)
+- [Comptes](#accounts) 
+  - [Actions & Gestionnaires](#messages--handlers)
+  - [Gestion des permissions basée sur les rôles](#role-based-permission-management) 
+    - [Niveaux de permission nommés](#named-permission-levels)
+    - [Cartographie des permissions](#named-message-handler-groups)
+    - [Évaluation des permissions](#permission-mapping)
     - [Evaluating Permissions](#evaluating-permissions) 
       - [Default Permission Groups](#default-permission-groups)
       - [Parallel Evaluation of Permissions](#parallel-evaluation-of-permissions)
