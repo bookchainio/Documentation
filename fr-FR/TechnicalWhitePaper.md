@@ -1,6 +1,6 @@
 # Livre blanc technique EOS.IO v2
 
-**Publication du 16 Mars 2018**
+**26 juin 2017**
 
 **Résumé:** Le logiciel EOS.IO introduit une nouvelle architecture blockchain conçue pour permettre le scaling vertical et horizontal d'applications décentralisées. Ceci est réalisé en créant une plateforme de type système d'exploitation sur laquelle les applications peuvent être développées. Le logiciel fournit les comptes, l'authentification, les bases de données, la communication asynchrone et l'ordonnancement des tâches sur les unités de traitement (Coeurs/Threads CPU). La technologie qui en résulte est une architecture blockchain pouvant potentiellement atteindre des millions de transactions à la seconde, élimine les frais d'utilisation et permet un déploiement et une maintenance rapides et faciles des applications décentralisées, le tout sur une blockchain gouvernée.
 
